@@ -2,16 +2,13 @@
 .02 tries to make all variable global"""
 
 import matplotlib.pyplot as plt
-#import matplotlib.animation as ani
 import streamlit as st
 import numpy as np
-#import random
 import pandas as pd
 
 
 def Calc_DA_Pro(mthfr, th, da_pro_constant):
     produced = da_pro_constant*mthfr*th/ic_da
-    #produced = 1.1*st.sidebar.slider('MTHFR/TH Constant', .3, 1.1, 1.1)
     return produced
 
 # def Calc_Packaged(pack_constant,ic_da,iv_da,vmat):
