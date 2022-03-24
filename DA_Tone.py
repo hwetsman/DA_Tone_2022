@@ -88,7 +88,8 @@ def Calc_EC_End(ec_end, end_rel, ec_end_loss):
 # Backbone Model
 # pro = []
 # extracellular = []
-# time = []
+time = []
+str_tyr = []
 # intravesicular = []
 # da_release = []
 # intracellular = []
@@ -105,7 +106,22 @@ def Calc_EC_End(ec_end, end_rel, ec_end_loss):
 # ic_da = 1
 # ec_da = 1
 
+#set cycles
 cycles = st.sidebar.slider('Cycles', 10, 25000, 10000)
+
+#blood tyrosine in microMoles
+# btyr = 97 #mMole
+VtyricKmax = 64 #mMole
+VtyricVmax = 400 #mMole/hr
+tyrpool = 1260 #brain tyrosine pool in microMole
+tyrpoolK1 = 6 #K of tyrpool to tyr
+tyrpoolK_1=0.6 #K of tyr to tyrpool
+Ktyrcat = 0.2 #K of catabolism of tyr
+tyr = 0 #start with no tyrosine
+btyr = st.sidebar.slider('Serum Tyrosine',min_value=39,max_value=180,value=97)
+
+
+
 
 #production
 # mthfr = st.sidebar.slider('MTHFR', .3, 1.0, 1.0)
@@ -160,8 +176,14 @@ cycles = st.sidebar.slider('Cycles', 10, 25000, 10000)
 # s = 2000
 # t = 7500
 
+
 for i in range(cycles):
+    time.append(i)
     #tyr
+    dICtyr = Get_ICtyr(btyr,VtyricKmax,VtyricVmax) #tyr in the brain
+    tyrpool = tyrpool+dICtyr #tyrosine pool in brain
+    tyr = tyrpool*tyrpoolK1-tyr*tyrpoolK_1-tyr*Ktyrcat #try available for DA
+    str_tyr.append(tyr)
     
     # ic_da
     # produced = Calc_DA_Pro(mthfr, th, da_pro_constant)
@@ -191,7 +213,7 @@ for i in range(cycles):
     # ec_loss = max(comt_constant * comt * ec_da, 0)
     # ec_da = Calc_EC(ec_da, released, ec_loss, reuptake)
     # extracellular.append(ec_da)
-    # time.append(i)
+    
 
     # #da_receptors = 3
     # da_receptors = Calc_DA_Recep(i, ec_da, da_threshold, da_receptors, max_da_receptors)
@@ -227,11 +249,11 @@ for i in range(cycles):
 # linedata = pd.DataFrame([recept_list[1000:cycles], toneset[1000:cycles], horizontal]).T
 # st.write('Receptors, Tone and Reward Line')
 # st.write('_ _ _ _ _ _ _ _Normal Reward_ _ _ _ _  _ _ _ _ _ _ _ _ _  _Cocaine_ _ _ _ _ _ _ _ _ _ _ _Amphetamine')
-st.line_chart(linedata, width=900, height=500)
+# st.line_chart(linedata, width=900, height=500)
 fig, ax = plt.subplots()
-
-ax.scatter(time[1000:cycles], horizontal, color='green', alpha=.1, s=1)
-ax.scatter(time[1000:cycles], recept_list[1000:cycles], color='red', s=1)
-ax.scatter(time[1000:cycles], toneset[1000:cycles], color='cyan', s=1)
+ax.scatter(time[1000:cycles],str_tyr[1000:cycles],color = 'green',s=1)
+# ax.scatter(time[1000:cycles], horizontal, color='green', alpha=.1, s=1)
+# ax.scatter(time[1000:cycles], recept_list[1000:cycles], color='red', s=1)
+# ax.scatter(time[1000:cycles], toneset[1000:cycles], color='cyan', s=1)
 
 st.pyplot(fig)
