@@ -7,6 +7,13 @@ import numpy as np
 import pandas as pd
 
 
+def Get_ICtyr(btyr,VtyricKmax,VtyricVmax):
+    """btyr and Kmax are in µM,Vmax in µM/hr
+    returns the change in the tyrpool in µM
+    """
+    change = (VtyricVmax*btyr)/(VtyricKmax+btyr)
+    return change
+
 # def Calc_DA_Pro(mthfr, th, da_pro_constant):
 #     produced = da_pro_constant*mthfr*th/ic_da
 #     return produced
