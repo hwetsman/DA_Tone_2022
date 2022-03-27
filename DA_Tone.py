@@ -14,6 +14,11 @@ def Get_ICtyr(btyr,VtyricKmax,VtyricVmax):
     change = (VtyricVmax*btyr)/(VtyricKmax+btyr)
     return change
 
+def Calculate_Vth(tyr,Ki_tyr):
+    """ this ignores the effect of eda and cda"""
+    Vth = .56/(1+(tyr/Ki_tyr))
+    return Vth
+
 # def Calc_DA_Pro(mthfr, th, da_pro_constant):
 #     produced = da_pro_constant*mthfr*th/ic_da
 #     return produced
@@ -90,6 +95,7 @@ def Calc_EC_End(ec_end, end_rel, ec_end_loss):
 # extracellular = []
 time = []
 str_tyr = []
+Vth_calc = []
 # intravesicular = []
 # da_release = []
 # intracellular = []
@@ -122,10 +128,9 @@ Ktyrcat = 0.2 #K of catabolism of tyr
 tyr = 0 #start with no tyrosine
 
 #tyr hydroxylase
+Ki_tyr = st.sidebar.slider('Ki(tyr)',max_value=160,min_value=37,value=160) #µM
 
-Ki_tyr = st.sidebar.slider('Ki(tyr)',max_value=160,min_value=37,value=160)
-160 #µM
-Vth = .56/(1+(tyr/Ki_tyr)) #this ignores the effect of eda and cda
+
 
 
 #production
@@ -189,7 +194,8 @@ for i in range(cycles):
     tyrpool = tyrpool+dICtyr #tyrosine pool in brain
     tyr = tyrpool*tyrpoolK1-tyr*tyrpoolK_1-tyr*Ktyrcat #try available for DA
     str_tyr.append(tyr)
-    
+    Vth = Calculate_Vth(tyr, Ki_tyr)
+    Vth_calc.append(Vth)
     # ic_da
     # produced = Calc_DA_Pro(mthfr, th, da_pro_constant)
     # pro.append(produced)
@@ -257,6 +263,7 @@ for i in range(cycles):
 # st.line_chart(linedata, width=900, height=500)
 fig, ax = plt.subplots()
 ax.scatter(time[1000:cycles],str_tyr[1000:cycles],color = 'green',s=1)
+ax.scatter(time[1000:cycles],Vth_calc[1000:cycles],color = 'b',s=1)
 # ax.scatter(time[1000:cycles], horizontal, color='green', alpha=.1, s=1)
 # ax.scatter(time[1000:cycles], recept_list[1000:cycles], color='red', s=1)
 # ax.scatter(time[1000:cycles], toneset[1000:cycles], color='cyan', s=1)
