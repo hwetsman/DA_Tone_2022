@@ -110,7 +110,9 @@ str_tyr = []
 cycles = st.sidebar.slider('Cycles', 10, 25000, 10000)
 
 #blood tyrosine in microMoles
-# btyr = 97 #mMole
+btyr = st.sidebar.slider('Serum Tyrosine',min_value=39,max_value=180,value=97)
+
+#params for calculating intracellular tyr
 VtyricKmax = 64 #mMole
 VtyricVmax = 400 #mMole/hr
 tyrpool = 1260 #brain tyrosine pool in microMole
@@ -118,9 +120,12 @@ tyrpoolK1 = 6 #K of tyrpool to tyr
 tyrpoolK_1=0.6 #K of tyr to tyrpool
 Ktyrcat = 0.2 #K of catabolism of tyr
 tyr = 0 #start with no tyrosine
-btyr = st.sidebar.slider('Serum Tyrosine',min_value=39,max_value=180,value=97)
 
+#tyr hydroxylase
 
+Ki_tyr = st.sidebar.slider('Ki(tyr)',max_value=160,min_value=37,value=160)
+160 #µM
+Vth = .56/(1+(tyr/Ki_tyr)) #this ignores the effect of eda and cda
 
 
 #production
